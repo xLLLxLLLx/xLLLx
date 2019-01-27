@@ -1,6 +1,7 @@
 #include<bits/stdc++.h>
 #define fr(i,x,y) for(int i=x;i<=y;++i)
 #define rf(i,x,y) for(int i=x;i>=y;--i)
+#define bug(x); cout<<#x<<"="<<x<<endl;
 #define lson x<<1
 #define rson x<<1|1
 #define LL long long
@@ -30,29 +31,38 @@ void add(int x,int y,LL w){
 	a[++cnt].to=x,a[cnt].w=w,a[cnt].nt=head[y],head[y]=cnt;
 }
 
-void pushdown(int x){
-	
-}
-
 int find(int x,int l,int r,LL T){
+	if(l==r){
+		return min(w[x]*1LL,T/l);
+	}
 	int mid=(l+r)>>1;
-	if(v[x]<T) return w[index];
-	pushdown(x);
-	if(v[lson]>T) return find(lson,l,mid,T);
+	if(v[x]<T) return w[x];
+	if(v[lson]>=T) return find(lson,l,mid,T);
 	else return w[lson]+find(rson,mid+1,r,T-v[lson]);
 }
 
-void change(int x,int l,int r,int L,int k){
-	if(l<=L&&L<=R) {
-		w[
-		pushup(x);
-	}
+void change(int x,int l,int r,int L,LL k){
+	if(l==r&&l==L) { v[x]+=L*k*1LL;w[x]+=k;return ; }
+	int mid=(l+r)>>1;
+	if(L<=mid) change(lson,l,mid,L,k);
+	else change(rson,mid+1,r,L,k);
+	w[x]=w[lson]+w[rson],v[x]=v[lson]+v[rson];
 }
 
-void dfs(int u,int fa){
+void dfs(int u,int fa,LL w){
+	change(1,1,1e6,s[u],nm[u]);
+	f[u]=find(1,1,1e6,Ti-2*w);
+	LL maxn=0,maxx=0;
 	for(int i=head[u];i;i=a[i].nt){
-		
+		int to=a[i].to;
+		if(to==fa) continue;
+		dfs(to,u,w+a[i].w);
+		if(dp[to]>=maxn) maxx=maxn,maxn=dp[to];
+		else if(dp[to]>maxx) maxx=dp[to];
 	}
+	if(u!=1) dp[u]=max(maxx,f[u]);
+	else dp[u]=max(maxn,f[u]);
+	change(1,1,1e6,s[u],-nm[u]);
 }
 
 int main(){
@@ -64,7 +74,12 @@ int main(){
 		read(x),read(w);
 		add(x,i,w);
 	}
-	dfs(1,0);
+	dfs(1,0,0);
+/*	fr(i,1,n) {
+		bug(i);
+		bug(dp[i]);
+		bug(f[i]);
+	}*/
 	printf("%lld\n",dp[1]);
 	return 0;
 }
