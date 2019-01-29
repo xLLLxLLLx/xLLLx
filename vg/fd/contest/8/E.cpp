@@ -34,7 +34,7 @@ int main(){
 	if(res>=2) out();
 	if(res) printf("1\n");
 	else {
-		printf("%d\n",sum/2+1);
+		printf("%d\n",sum/2+1);//when on test... xLLLx tried in luangaoQAQ
 	}
 	fr(i,1,n){
 		if(i==be) continue;
