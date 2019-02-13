@@ -1,109 +1,76 @@
-#include<bits/stdc++.h>
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <map>
+#include <vector>
 using namespace std;
-const int N=205;
-const int M=1e5+10;
-const int inf=0x3f3f3f3f;
+const int N = 1100;
+const int INF = 0x3f3f3f3f;
  
-int n,cnt,E=1,S=201,T=202,a[N],pri[M];
-int fir[N],vis[N],dis[N],nex[M],arr[M],cap[M],use[N],can[N][N];
-queue<int> Q;
-vector<int> vec[N];
+struct Node
+{
+    int to;//终点
+    int cap; //容量
+    int rev;  //反向边
+};
  
-void Init() {
-	for (int i=2;i<M;i++) pri[i]=1;
-	for (int i=2;i<M;i++)
-		if (pri[i])
-			for (int j=i+i;j<M;j+=i) pri[j]=0;
+vector<Node> v[N];
+bool used[N];
+ 
+void add_Node(int from,int to,int cap)  //重边情况不影响
+{
+    v[from].push_back((Node){to,cap,v[to].size()});
+    v[to].push_back((Node){from,0,v[from].size()-1});
 }
  
-inline void Add_Edge(int x,int y,int c) {
-	nex[++E]=fir[x];
-	fir[x]=E; arr[E]=y; cap[E]=c;
-	nex[++E]=fir[y];
-	fir[y]=E; arr[E]=x; cap[E]=0;
+int dfs(int s,int t,int f)
+{
+    if(s==t)
+        return f;
+    used[s]=true;
+    for(int i=0;i<v[s].size();i++)
+    {
+        Node &tmp = v[s][i];  //注意
+        if(used[tmp.to]==false && tmp.cap>0)
+        {
+            int d=dfs(tmp.to,t,min(f,tmp.cap));
+            if(d>0)
+            {
+                tmp.cap-=d;
+                v[tmp.to][tmp.rev].cap+=d;
+                return d;
+            }
+        }
+    }
+    return 0;
 }
  
-int Bfs() {
-	memset(vis,0,sizeof(vis));
-	memset(dis,0x3f,sizeof(dis));
-	dis[S]=0; Q.push(S);
-	while (!Q.empty()) {
-		int u=Q.front(); Q.pop();
-		for (int i=fir[u];i;i=nex[i])
-			if (cap[i]&&dis[arr[i]]==inf) {
-				dis[arr[i]]=dis[u]+1;
-				Q.push(arr[i]);
-			}
-	}
-	return dis[T]<inf;
+int max_flow(int s,int t)
+{
+    int flow=0;
+    for(;;){
+        memset(used,false,sizeof(used));
+        int f=dfs(s,t,INF);
+        if(f==0)
+            return flow;
+        flow+=f;
+    }
 }
- 
-int Dfs(int x,int flow) {
-	if (x==T||!flow) return flow;
-	int ans=0;
-	for (int i=fir[x];i;i=nex[i])
-		if (cap[i]&&dis[arr[i]]==dis[x]+1) {
-			int del=Dfs(arr[i],min(flow,cap[i]));
-			ans+=del; cap[i]-=del; cap[i^1]+=del; flow-=del;
-		}
-	return ans;
-}
- 
-void Dinic() {
-	for (int i=1;i<=n;i++) {
-		if (a[i]&1) Add_Edge(S,i,2);
-		else Add_Edge(i,T,2);
-	}
-	for (int i=1;i<=n;i++)
-		if (a[i]&1) {
-			for (int j=1;j<=n;j++)
-				if (!(a[j]&1)&&pri[a[i]+a[j]]) {
-					Add_Edge(i,j,1);
-				} 
-		}
-	int ans=0;
-	while (Bfs()) ans+=Dfs(S,inf);
-	if (ans<n) puts("Impossible"),exit(0); 
-}
- 
-void Getans(int x) {
-	for (int i=1;i<=n;i++)
-		if (can[x][i]&&!use[i]) {
-			use[i]=cnt;
-			vec[cnt].push_back(i);
-			Getans(i);
-		}
-}
- 
-int main() {
-	Init();
-	scanf("%d",&n);
-	if (n&1) return 0*puts("Impossible");
-	for (int i=1;i<=n;i++) scanf("%d",&a[i]);
-	for (int i=1;i<=n;i++) {
-		if (a[i]&1) cnt++;
-		else cnt--;
-	}
-	if (cnt) return 0*puts("Impossible");
-	Dinic(); cnt=0;
-	for (int i=1;i<=n;i++) {
-		if (a[i]&1) {
-			for (int j=fir[i];j;j=nex[j])
-				if (arr[j]<=n&&!cap[j]) can[i][arr[j]]=can[arr[j]][i]=1;
-		}
-	}
-	for (int i=1;i<=n;i++)
-		if (!use[i]) {
-			use[i]=++cnt;
-			vec[cnt].push_back(i);
-			Getans(i);
-		}
-	printf("%d\n",cnt);
-	for (int i=1;i<=cnt;i++) {
-		printf("%d ",vec[i].size());
-		for (int j=0;j<vec[i].size();j++) printf("%d ",vec[i][j]);
-		putchar('\n');
-	}
-	return 0;
+int main()
+{
+    int n,m;
+    while(~scanf("%d%d",&n,&m))
+    {
+        memset(v,0,sizeof(v));
+        for(int i=0;i<n;i++)
+        {
+            int x,y,z;
+            scanf("%d%d%d",&x,&y,&z);
+            add_Node(x,y,z);
+        }
+        printf("%d\n",max_flow(1,m));
+    }
 }
 
