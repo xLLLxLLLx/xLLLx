@@ -1,79 +1,112 @@
-#include <bitset>
-#include <algorithm>
-#include <cstring>
-#include <iostream>
-#include <vector>
 #include <cstdio>
+#include <iostream>
+#include <algorithm>
+#include <sstream>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <climits>
+#include <cmath>
+#include <queue>
+#include <vector>
+#include <stack>
+#include <set>
+#include <map>
+#define INF 0x3f3f3f3f
+#define fr(i,x,y) for(int i=x;i<=y;++i)
+#define eps 1e-8
 using namespace std;
-#define pb(a) push_back(a);
-#define maxn 2100
-vector<int>g[maxn],tree[maxn];
-bitset<2100> to[2100];
-int n,m,ans,vis[maxn];
-void dfs(int now,int last)
+ 
+const int MAXN = 2100;
+vector<int> mm[MAXN];
+int dep[MAXN], lim[MAXN];
+int d[MAXN][MAXN];
+ 
+void dfs(int u, int p)
 {
-    vis[now]=1;
-    int v;
-    to[now].reset();
-    for(int i=0;i<g[now].size();i++)
+    for (int i = 0; i < mm[u].size(); i ++)
     {
-        v=g[now][i];
-        if(vis[v])
+        int v = mm[u][i];
+        if (v == p)
         {
-            to[now].set(v);
+            continue;
         }
-    }
-    for(int i=0;i<tree[now].size();i++)
-    {
-        v=tree[now][i];
-        if(v!=last)
-        {
-            dfs(v,now);
-        }
-    }
-    if(last==-1)
-    {
-        return ;
-    }
-    if(to[now].test(last))
-    {
-        ans++;
-    }
-    else
-    {
-        to[last]|=to[now];
+        dep[v] = dep[u] + 1;
+        dfs(v, u);
     }
 }
+ 
+void dp(int u, int p)
+{
+    for (int i = lim[u]; i <= dep[u]; i ++)
+    {
+        d[u][i] = 0;
+    }
+    for (int i = 0; i < mm[u].size(); i ++)
+    {
+        int v = mm[u][i];
+        if (v == p)
+        {
+            continue;
+        }
+        dp(v, u);
+        int tmp = d[v][dep[v]];
+        for (int k = 0; k <= dep[u]; k ++)
+        {
+            if (d[v][k] != -1)
+            {
+                tmp = (tmp == -1) ? d[v][k] : min(tmp, d[v][k]);
+            }
+            if (k >= lim[u])
+            {
+                d[u][k] += tmp;
+            }
+        }
+    }
+    if (p != -1)
+    {
+        d[u][dep[u]] ++;
+    }
+}
+ 
 int main()
 {
-    int u,v;
-    while(scanf("%d%d",&n,&m))
+    int n, m;
+    while (scanf("%d %d", &n, &m), n || m)
     {
-        ans=0;
-        memset(vis,0,sizeof(vis));
-        if(n+m==0)
+        memset(d, -1, sizeof(d));
+        memset(lim, 0, sizeof(lim));
+        memset(dep, -1, sizeof(dep));
+        for (int i = 0; i < n; i ++)
         {
-            break;
+            mm[i].clear();
         }
-        for(int i=1;i<=n;i++)
+        for (int i = 1; i < n; i ++)
         {
-            tree[i].clear();
-            g[i].clear();
+            int u, v;
+            scanf("%d %d", &u, &v);
+            u --;
+            v --;
+            mm[u].push_back(v);
+            mm[v].push_back(u);
         }
-        for(int i=1;i<n;i++)
+        dep[0] = 0;
+        dfs(0, -1);
+        for (int i = n; i <= m; i ++)
         {
-            scanf("%d%d",&u,&v);
-            tree[u].pb(v);
-            tree[v].pb(u);
+            int u, v;
+            scanf("%d %d", &u, &v);
+            u --;
+            v --;
+            if (dep[u] < dep[v])
+            {
+                swap(u, v);
+            }
+            lim[u] = max(lim[u], dep[v] + 1);
         }
-        for(int i=n;i<=m;i++)
-        {
-            scanf("%d%d",&u,&v);
-            g[u].pb(v);
-            g[v].pb(u);
-        }
-        dfs(1,-1);
-        printf("%d\n",ans);
+        dp(0, -1);
+        fr(i,0,n-1) fr(j,0,n-1) printf("d[%d][%d]=%d\n",i,j,d[i][j]);
+        printf("%d\n", d[0][0]);
     }
     return 0;
 }
