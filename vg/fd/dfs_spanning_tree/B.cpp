@@ -1,28 +1,13 @@
-#include<iostream>
-#include<cstdio>
-#include<cstdlib>
-#include<cstring>
-#include<string>
-#include<cmath>
-#include<map>
-#include<stack>
-#include<vector>
-#include<queue>
-#include<set>
-#include<algorithm>
-
+#include<bits/stdc++.h>
 #define fr(i,x,y) for(int i=x;i<=y;++i)
 #define rf(i,x,y) for(int i=x;i>=y;--i)
 #define LL long long
 using namespace std;
-const int N=1e5+10,M=3e5+10;
+const int N=3e5+10,M=6e5+10;
 const LL MAXN=1e18;
-struct data{
-	int x,y;
-}h[M];
 int cnt=-1,n,m;
-LL w[M<<1],v[N];
-int Next[M<<1],head[N],pp[M<<1],to[M<<1],p[M<<1],g[N],vis[N],dep[N];
+LL w[M],v[N];
+int Next[M<<1],head[N],pp[M<<1],to[M<<1],p[M<<1],vis[N];
 
 void add(int x,int y){
 	to[++cnt]=y,pp[cnt]=x,Next[cnt]=head[x],head[x]=cnt;
@@ -30,7 +15,7 @@ void add(int x,int y){
 }
 
 void dfs(int u,int fa){
-	g[u]=fa,dep[u]=dep[fa]+1,vis[u]=1;
+	vis[u]=1;
 	for(int i=head[u];i!=-1;i=Next[i]){
 		if(vis[to[i]]) continue;
 		p[i]=1,dfs(to[i],u);
@@ -42,8 +27,16 @@ void ang(int u,int fa){
 		if(!p[i]) continue;
 		ang(to[i],u);
 		v[u]^=v[to[i]];
-		w[i/2]=
+		w[i/2]=v[to[i]];
 	}
+}
+
+LL js(LL x){
+	return (x-1)*x/2;
+}
+
+LL RAD(){
+	return (1ll*rand())^(1ll*rand())<<15^(1ll*rand())<<30^(1ll*rand())<<45^(1ll*rand())<<60;
 }
 
 int main(){
@@ -60,25 +53,23 @@ int main(){
 	fr(i,0,m-1){
 		int nw=i*2;
 		if(p[nw]||p[nw+1]) continue;
-		h[++res].x=to[nw],h[res].y=pp[nw];
-		if(dep[h[res].x]<dep[h[res].y]) swap(h[res].x,h[res].y);
-		LL pos=rand()%MAXN+9979;
-		cout<<pos<<endl;
-		v[h[res].x]^=pos,v[f[h[res].y]]^=pos;
-		w[i*2]=w[i*2+1]=pos;
+		int x=to[nw],y=pp[nw];
+		LL pos=RAD();
+		v[x]^=pos,v[y]^=pos;
+		w[i]=pos;
 	}
-	agn(1,0);
+	ang(1,0);
 	sort(w,w+m);
-	LL zz=0;
+	LL zz=0,ans=0;
 	fr(i,0,m-1) if(!w[i]) zz++; else break;
 	LL lt=0;
 	fr(i,1,m-1){
 		if(w[i]!=w[i-1]){
-			LL pos=i-lt;
-			zz+=(pos-1)*pos/2;
+			ans+=js(i-lt);
 			lt=i;
 		}
 	}
+	ans+=js(m-lt);
 	ans+=zz*(m-zz);
 	printf("%lld\n",ans);
 	return 0;
