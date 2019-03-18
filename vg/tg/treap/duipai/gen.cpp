@@ -6,7 +6,7 @@ using namespace std;
 
 int main(){
     srand(time(NULL));
-    int n=rand()%10+1,m=rand()%15+1;
+    int n=rand()%100000+1,m=rand()%100000+1;
     printf("%d %d\n",n,m);
     fr(i,1,n) {
         int x=rand()%200-100;
