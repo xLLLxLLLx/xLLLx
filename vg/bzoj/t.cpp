@@ -1,81 +1,90 @@
-#include<cstdio>
 #include<iostream>
+#include<cstdio>
+#define ll long long
+#define N 500005
 using namespace std;
-inline int read()
-{
-    int x=0;char ch=getchar();
-    while(ch>'9'||ch<'0')ch=getchar();
-    while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
-    return x;
+ 
+int n,m,tsh_cnt,pos[N],val[N],tsh[N]; bool flag;
+struct node{ int l,r; }; ll id[N],inf=(ll)4611686018427387904;
+bool operator <(node x,node y){
+	return id[x.l]<id[y.l] || id[x.l]==id[y.l] && id[x.r]<id[y.r];
 }
-int n,m,sz;
-int root[200005],ls[2000005],rs[2000005],v[2000005],deep[2000005];
-void build(int &k,int l,int r)
-{
-	k=++sz;
-	if(l==r){v[k]=l;return;}
-	int mid=(l+r)>>1;
-	build(ls[k],l,mid);
-	build(rs[k],mid+1,r);
+bool operator ==(node x,node y){
+	return id[x.l]==id[y.l] && id[x.r]==id[y.r];
 }
-void modify(int l,int r,int x,int &y,int pos,int val)
-{
-	y=++sz;
-	if(l==r){v[y]=val;deep[y]=deep[x];return;}
-	ls[y]=ls[x];rs[y]=rs[x];
-	int mid=(l+r)>>1;
-	if(pos<=mid)
-		modify(l,mid,ls[x],ls[y],pos,val);
-	else modify(mid+1,r,rs[x],rs[y],pos,val);
-}
-int query(int k,int l,int r,int pos)
-{
-	if(l==r)return k;
-	int mid=(l+r)>>1;
-	if(pos<=mid)return query(ls[k],l,mid,pos);
-	else return query(rs[k],mid+1,r,pos);
-}
-void add(int old,int &nw,int l,int r,int pos)
-{
-  nw=++sz;ls[nw]=ls[old],rs[nw]=rs[old];
-	if(l==r){deep[nw]=deep[old]+1,v[nw]=v[old];return;}
-	int mid=(l+r)>>1;
-	if(pos<=mid)add(ls[nw],ls[nw],l,mid,pos);
-	else add(rs[nw],rs[nw],mid+1,r,pos);
-}
-int find(int k,int x)
-{
-    int p=query(k,1,n,x);
-	if(x==v[p])return p;
-    return find(k,v[p]);
-}
-int main()
-{
-	n=read();m=read();
-	build(root[0],1,n);
-	int f,k,a,b;
-	for(int i=1;i<=m;i++)
-	{
-		f=read();
-		if(f==1)
-		{
-			root[i]=root[i-1];
-			a=read();b=read();
-			int p=find(root[i],a),q=find(root[i],b);
-			if(v[p]==v[q])continue;
-			if(deep[p]>deep[q])swap(p,q);
-			modify(1,n,root[i],root[i],v[p],v[q]);
-			if(deep[p]==deep[q])add(root[i],root[i],1,n,v[q]);
+struct scp_node{
+	int trtot,rt,ls[N],rs[N],sz[N]; node nd[N];
+	void del(int k){
+		if (ls[k]) del(ls[k]); tsh[++tsh_cnt]=k; if (rs[k]) del(rs[k]);
+	}
+	void build(int &k,int x,int y,ll l,ll r){
+		int z=(x+y)>>1; ll mid=(l+r)>>1;
+		k=tsh[z]; id[k]=mid; sz[k]=y-x+1;
+		if (x<z) build(ls[k],x,z-1,l,mid); else ls[k]=0;
+		if (z<y) build(rs[k],z+1,y,mid,r); else rs[k]=0;
+	}
+	void rebuild(int &k,ll l,ll r){
+		tsh_cnt=0; del(k); build(k,1,tsh_cnt,l,r);
+	}
+	int ins(int &k,ll l,ll r,node x){
+		ll mid=(l+r)>>1;
+		if (!k){
+			k=++trtot; sz[k]=1; id[k]=mid;
+			nd[k]=x; return k;
 		}
-		if(f==2)
-		{k=read();root[i]=root[k];}
-		if(f==3)
-		{
-			root[i]=root[i-1];
-			a=read();b=read();
-		    int p=find(root[i],a),q=find(root[i],b);
-			if(v[p]==v[q])puts("1");
-			else puts("0");
+		if (x==nd[k]) return k; else{
+			sz[k]++;
+			int t=(x<nd[k])?ins(ls[k],l,mid,x):ins(rs[k],mid,r,x);
+			if (sz[k]*0.77>max(sz[ls[k]],sz[rs[k]])){
+				if (flag)
+					if (x<nd[k]) rebuild(ls[k],l,mid); else rebuild(rs[k],mid,r);
+				flag=0;
+			} else flag=1;
+			return t;
+		}
+	}
+}scp;
+void build(int k,int l,int r){
+	val[k]=l; if (l==r) return;
+	int mid=(l+r)>>1;
+	build(k<<1,l,mid); build(k<<1|1,mid+1,r);
+}
+void mdy(int k,int l,int r,int x){
+	if (l==r){ val[k]=x; return; }
+	int mid=(l+r)>>1;
+	if (x<=mid) mdy(k<<1,l,mid,x); else mdy(k<<1|1,mid+1,r,x);
+	if (id[pos[val[k<<1]]]<id[pos[val[k<<1|1]]]) val[k]=val[k<<1|1]; else val[k]=val[k<<1];
+}
+int qry(int k,int l,int r,int x,int y){
+	if (l==x && r==y) return val[k]; int mid=(l+r)>>1;
+	if (y<=mid) return qry(k<<1,l,mid,x,y);
+	else if (x>mid) return qry(k<<1|1,mid+1,r,x,y); 
+	else{
+		int t1=qry(k<<1,l,mid,x,mid),t2=qry(k<<1|1,mid+1,r,mid+1,y);
+		if (id[pos[t2]]>id[pos[t1]]) t1=t2; return t1;
+	}
+}
+int read(){
+	int x=0; char ch=getchar();
+	while (ch<'0' || ch>'9') ch=getchar();
+	while (ch>='0' && ch<='9'){ x=x*10+ch-'0'; ch=getchar(); }
+	return x;
+}
+int main(){
+	n=read(); m=read(); int i; id[0]=-inf-1;
+	scp.ins(scp.rt,-inf,inf,(node){0,0});
+	for (i=1; i<=n; i++) pos[i]=1; build(1,1,n);
+	char ch; int x,y,z;
+	while (m--){
+		ch=getchar();
+		while (ch<'A' || ch>'Z') ch=getchar();
+		if (ch=='C'){
+			x=read(); y=read(); z=read();
+			pos[z]=scp.ins(scp.rt,-inf,inf,(node){pos[x],pos[y]});
+			if (flag) scp.rebuild(scp.rt,-inf,inf);
+			mdy(1,1,n,z);
+		} else{
+			x=read(); y=read(); printf("%d\n",qry(1,1,n,x,y));
 		}
 	}
 	return 0;
