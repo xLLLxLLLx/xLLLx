@@ -1,6 +1,9 @@
 #include<bits/stdc++.h>
 using namespace std;
 int main(){
+    system("g++ -g tt.cpp -o tt");
+    system("g++ -g my.cpp -o my");
+    system("g++ -g std.cpp -o std");
     int i;
   for (i=1;;i++){
         printf("The result of No. %d Case is:  ",i);

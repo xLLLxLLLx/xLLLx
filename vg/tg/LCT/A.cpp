@@ -101,7 +101,7 @@ void init(){
   memset(head,0,sizeof head);
   memset(mx,0,sizeof mx);
   memset(ch,0,sizeof ch);
-  memset(tag,0,sizeof tag);
+  //memset(tag,0,sizeof tag);
   memset(v,0,sizeof v);
 }
 

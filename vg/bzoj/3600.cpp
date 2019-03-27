@@ -7,8 +7,8 @@
 #define db double
 using namespace std;
 const int N=5e5+10;
-const LL inf=123456789123456789;
-const db st=0.75;
+const LL inf=4611686018427387904;
+const db st=0.77;
 int pos[N],v[N<<2];
 LL val[N];
 int flg=0;
@@ -57,9 +57,12 @@ struct data{
       k=++idx;
       LL mid=(l+r)>>1;
       nd[k]=x,sz[k]=1,val[k]=mid;
+      printf("k=%d val=%lld\n",k,val[k]);
       return k;
     }
-    else if(nd[k]==x) return k;
+    else if(nd[k]==x){
+      return k;
+    }
     else {
       LL mm=(l+r)>>1;
       int t=(nd[k]<x)?insert(ls[k],l,mm,x):insert(rs[k],mm,r,x);
@@ -70,13 +73,14 @@ struct data{
           flg=0;
         }
       } else flg=1;
+      return t;
     }
   }
   
 }tz;
 
 void build(int x,int l,int r){
-  if(l==r) {val[x]=l;return ;}
+  if(l==r) {v[x]=l;return ;}
   int mid=(l+r)>>1;
   build(lson,l,mid),build(rson,mid+1,r);
 }
@@ -109,6 +113,8 @@ int main(){
   int n,m;scanf("%d%d",&n,&m);
   fr(i,1,n) pos[i]=1;
   build(1,1,n);
+  val[0]=-inf-1;
+  tz.insert(tz.rt,-inf,inf,(node){0,0});
   fr(o,1,m){
     char ch;cin>>ch;
     int x,y,z;
@@ -116,11 +122,14 @@ int main(){
       scanf("%d%d%d",&x,&y,&z);
       pos[z]=tz.insert(tz.rt,-inf,inf,(node){pos[x],pos[y]});
       if(flg) tz.rebuild(tz.rt,-inf,inf);
-      flg=0;
       modify(1,1,n,z);
     } else {
       scanf("%d%d",&x,&y);
       printf("%d\n",Ask(1,1,n,pos[x],pos[y]));
     }
+    fr(i,1,n) printf("%d ",pos[i]);
+    puts("");
+    fr(i,1,n) printf("%lld ",val[i]);
+    puts("");
   }
 }

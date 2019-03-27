@@ -10,7 +10,7 @@ struct data{
   int nt,to;
 }a[N<<1];
 int cnt=0;
-int head[N],col[N],f[N],ch[N][2],sum[N];
+int head[N],col[N],f[N],ch[N][2],v[N];
 
 void read(int &x){
   char ch=getchar();x=0;
@@ -30,7 +30,9 @@ struct LCT{
   }
   
   void up(int x){
-    sum[x]=sum[ls]+sum[rs]+(col[x]>0);
+    if(col[x]) v[x]=x;
+    else v[x]=0;
+    if(v[ls]) v[x]=v[ls];
   }
   
   void rotate(int x){
@@ -57,16 +59,10 @@ struct LCT{
     }
   }
   
-  int find(int x){
-    if(sum[ls]) return find(ls);
-    else if(col[x]) return x;
-    else return find(rs);  
-  }
-  
   int Get(int x){
     access(x),splay(x);
-    if(!sum[x]) return -1;
-    else return find(x);
+    if(v[x]) return v[x];
+    else return -1;
   }
   
   void change(int x){

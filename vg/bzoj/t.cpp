@@ -19,9 +19,10 @@ struct scp_node{
 	}
 	void build(int &k,int x,int y,ll l,ll r){
 		int z=(x+y)>>1; ll mid=(l+r)>>1;
-		k=tsh[z]; id[k]=mid; sz[k]=y-x+1;
+		k=tsh[z]; id[k]=mid; sz[k]=1;
 		if (x<z) build(ls[k],x,z-1,l,mid); else ls[k]=0;
 		if (z<y) build(rs[k],z+1,y,mid,r); else rs[k]=0;
+		sz[k]=sz[ls[k]]+sz[rs[k]];
 	}
 	void rebuild(int &k,ll l,ll r){
 		tsh_cnt=0; del(k); build(k,1,tsh_cnt,l,r);
@@ -86,6 +87,10 @@ int main(){
 		} else{
 			x=read(); y=read(); printf("%d\n",qry(1,1,n,x,y));
 		}
+		for(int i = 1;i <= n;++ i) printf("%d ",pos[i]);
+		puts("");
+		for(int i = 1;i <= n;++ i) printf("%lld ",id[i]);
+		puts("");
 	}
 	return 0;
 }
