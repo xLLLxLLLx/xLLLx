@@ -25,6 +25,7 @@ void add(int x,int y){
 #define rs ch[x][1]
 
 struct LCT{
+  
   int ch[N][2],s[N],f[N],si[N];
   
   LCT(){
@@ -71,8 +72,8 @@ struct LCT{
   void link(int x){
     splay(x);
     int y=ba[x];
-    f[x]=ba[x];
-    access(y),splay(y);
+    f[x]=y;
+    if(y) access(y),splay(y);
     si[y]+=s[x];
     up(y);
   }
@@ -107,7 +108,7 @@ int main(){
     add(x,y);
   }
   dfs(1);
-  ba[1]=n+1,lct[0].link(1);
+  //ba[1]=n+1;lct[0].link(1);
   int m;read(m);
   for(int i=1,x,y;i<=m;++i){
     read(x),read(y);

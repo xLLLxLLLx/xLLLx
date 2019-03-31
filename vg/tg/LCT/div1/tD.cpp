@@ -79,7 +79,9 @@ void splay(int x)
 void access(int x)
 {
 		int pos=x;
+		puts("----");
 		while(fa[pos]) printf("%d\n",pos),pos=fa[pos];
+		puts("----");
     for(int t=0;x;t=x,x=fa[x])
         splay(x),c[x][1]=t,update(x);
 }
