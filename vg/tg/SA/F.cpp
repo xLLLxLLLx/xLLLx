@@ -19,8 +19,7 @@ void Sort(){
 void Geth(){
 	int H=0;
 	fr(i,1,n){
-		if(H) --H;
-		int j=sa[rk[i]-1];
+		if(H) --H;		int j=sa[rk[i]-1];
 		while(a[i+H]==a[j+H]) H++;
 		h[rk[i]]=H;
 	}
