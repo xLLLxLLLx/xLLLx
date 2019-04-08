@@ -1,147 +1,84 @@
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
+#define lson (x<<1)
+#define rson (x<<1|1)
+#define fr(i,x,y) for(int i=x;i<=y;++i)
+#define rf(i,x,y) for(int i=x;i>=y;--i)
+#define LL long long
 using namespace std;
-#include <ext/pb_ds/assoc_container.hpp> 
-#include <ext/pb_ds/tree_policy.hpp> 
-using namespace __gnu_pbds;   
-#define ordered_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update> 
-#define ll long long int
-#define ld double
-#define ff first
-#define ss second
-#define pb push_back
-#define mp make_pair
-#define all(a) a.begin(),a.end()
-#define sz(a) (ll)(a.size())
-const ll M=1e5+5;
-ll a[M],k[M],s1[M],s2[M];
-ll lazy[4*M],seg[4*M],flazy[4*M];
-void build(ll i,ll s,ll e)
-{
-	if(s==e)
-	{
-		seg[i]=a[s];
-		return;
-	}
-	ll m=(s+e)/2;
-	build(2*i,s,m);
-	build(2*i+1,m+1,e);
-	seg[i]=seg[2*i]+seg[2*i+1];
+const int N=1e5+10;
+const LL inf=1e18;
+LL sum[N],tag[N],a[N],k[N],b[N],c[N];
+
+template <class T>
+void read(T &x){
+	char ch=getchar();x=0;bool t=0;
+	for(;ch<'0'||ch>'9';ch=getchar()) t|=(ch=='-');
+	for(;ch>='0'&&ch<='9';ch=getchar()) x=(x<<1)+(x<<3)+(ch^48);
+	if(t) x=-x;
 }
-void split(ll i,ll s,ll e)
-{
-	if(flazy[i]!=0)
-		seg[i]=(e-s+1)*lazy[i]+s2[e-1]-s2[s-1]-(e-s)*s1[s-1];
-	if(flazy[i]==0)
-		return;
-	if(s==e)
-		return;
-	if(flazy[2*i]==0)
-	{
-		flazy[2*i]=1;
-		lazy[2*i]=lazy[i];
-	}
-	else
-	{
-		lazy[2*i]=max(lazy[2*i],lazy[i]);
-	}
-	if(flazy[2*i+1]==0)
-	{
-		flazy[2*i+1]=1;
-		lazy[2*i+1]=lazy[i]+s1[(s+e)/2]-s1[s-1];
-	}
-	else
-	{
-		lazy[2*i+1]=max(lazy[2*i+1],lazy[i]+s1[(s+e)/2]-s1[s-1]);
-	}
-	flazy[i]=0;
+
+void up(int x){
+	sum[x]=sum[ls]+sum[rs];
 }
-ll query(ll i,ll s,ll e,ll l,ll r)
-{
-	split(i,s,e);
-	if(s>r || l>e)
-		return 0;
-	if(s>=l && e<=r)
-	{
-		// cout<<s<<" "<<e<<" "<<seg[i]<<"\n";
-		return seg[i];
-	}
-	ll m=(s+e)/2;
-	return query(2*i,s,m,l,r)+query(2*i+1,m+1,e,l,r);
+
+void cal(int x,int l,int r,LL tt){
+	if(tt==-inf) return ;
+	sum[x]+=c[r]-c[l-1]+(r-l+1)*tt;
+	tag[x]=tt;
 }
-void update(ll i,ll s,ll e,ll l,ll r,ll z)
-{
-	split(i,s,e);
-	if(s>r || l>e)
-		return;
-	if(s>=l && e<=r)
-	{
-		if(flazy[i]==0)
-		{
-			flazy[i]=1;
-			lazy[i]=z+s1[s-1]-s1[l-1];
-		}
-		else
-			lazy[i]=max(lazy[i],z+s1[s-1]-s1[l-1]);
-		seg[i]=(e-s+1)*lazy[i]+s2[e-1]-s2[s-1]-(e-s)*s1[s-1];
-		// cout<<s<<" "<<e<<" "<<seg[i]<<"\n";
-		return;
-	}
-	ll m=(s+e)/2;
-	update(2*i,s,m,l,r,z);
-	update(2*i+1,m+1,e,l,r,z);
-	seg[i]=seg[2*i+1]+seg[2*i];
-	flazy[i]=0;
-	// cout<<s<<" "<<e<<" "<<seg[i]<<"\n";
+
+void down(int x,int l,int r){
+	if(tag[x]==-inf||l==r) return ;
+	int mid=(l+r)>>1;
+	cal(lson,l,mid,tag[x]);
+	cal(rson,mid+1,r,tag[x]);
+	tag[x]=-inf;
 }
-int main()
-{
-	ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
-	ll n;
-	cin>>n;
-	for(ll i=1;i<=n;i++)
-		cin>>a[i];
-	for(ll i=1;i<n;i++)
-	{
-		cin>>k[i];
-		s1[i]=s1[i-1]+k[i];
-		s2[i]=s2[i-1]+s1[i];
+
+void build(int x,int l,int r){
+	tag[x]=-inf;
+	if(l==r){
+		sum[x]=a[l];
+		return ;
 	}
+	int mid=(l+r)>>1;
+	build(lson,l,mid),build(rson,mid+1,r);
+	up(x);
+}
+
+void update(int x,int l,int r,int L,int R,LL tt){
+
+}
+
+LL Ask(int x,int l,int r,int L,int R){
+	if(L<=l&&r<=R) return sum[x];
+	int mid=(l+r)>>1;
+	down(x);
+	LL ans1=0,ans2=0;
+	if(L<=mid) ans1=Ask(lson,l,mid,L,R);
+	if(R>mid) ans2=Ask(rson,mid+1,r,L,R);
+	return ans1+ans2;
+}
+
+char lx[2];
+
+int main(){
+	int n;read(n);
+	fr(i,1,n) read(a[i]);
+	fr(i,1,n) b[i]=b[i-1]+a[i];
+	fr(i,1,n) c[i]=c[i-1]+b[i];
 	build(1,1,n);
-	ll q;
-	cin>>q;
-	while(q--)
-	{
-		char c;
-		cin>>c;
-		if(c=='s')
-		{
-			// cout<<"fuck"<<"\n";
-			ll l,r;
-			cin>>l>>r;
-			cout<<query(1,1,n,l,r)<<"\n";
-		}
-		else
-		{
-			ll i,x;
-			cin>>i>>x;
-			ll l=i,r=n,mid,p=-1;
-			ll z = query(1,1,n,i,i);
-			// cout<<z<<"\n";
-			while(l<r)
-			{
-				mid=(l+r)/2;
-				if(mid==p)
-					mid++;
-				p=mid;
-				ll y=query(1,1,n,p,p);
-				if(y>z+x+s1[p-1]-s1[i-1])
-					r=mid-1;
-				else
-					l=mid;
+	fr(i,2,n) read(k[i]);
+	int q;read(q);
+	fr(o,1,q){
+		scanf("%s",lx+1);
+		int l,r;read(l),read(r);
+		if(lx[1]=='+'){
+			int ans=0;
+			while(l<=r){
+				/**/
 			}
-			// cout<<i<<" "<<l<<"\n";
-			update(1,1,n,i,l,z+x);
-		}
+		} else printf("%lld\n",Ask(1,1,n,l,r));
 	}
 	return 0;
 }
