@@ -47,6 +47,7 @@ int main(){
 			if(j*2>n) break;
 			//printf("j=%d gg=%d n-2*j+k-1=%d k-1=%d\n",j,gg,n-2*j+k-1,k-1);
 			LL pos=mul(C(gg,j),C(n-2*j+k-1,k-1));
+			//printf("%lld\n",pos);
 			if(j&1) Add(ans,-pos);
 			else Add(ans,pos);
 		}
