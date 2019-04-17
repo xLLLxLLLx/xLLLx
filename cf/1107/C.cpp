@@ -4,33 +4,29 @@
 #define LL long long
 using namespace std;
 const int N=2e5+10;
-int c[N];
-LL a[N],w[N];
+char lx[N];
+LL a[N],b[N];
 
 bool cmp(LL x,LL y){
 	return x>y;
 }
 
 int main(){
-	int n,k;cin>>n>>k;
-	fr(i,1,n) cin>>w[i];
-	fr(i,1,n) {
-		char ch;cin>>ch;
-		c[i]=ch-'a'+1;
-	}
-	LL ans=0;
-	a[++a[0]]=w[1];
+	LL sum=0;
+	int n,k;scanf("%d%d",&n,&k);
+	fr(i,1,n) scanf("%lld",&a[i]);
+	scanf("%s",lx+1);
+	int res=0;b[++res]=a[1];
 	fr(i,2,n){
-		if(c[i]==c[i-1]) a[++a[0]]=w[i];
-		else {
-			sort(a+1,a+1+a[0],cmp);
-			fr(j,1,min(a[0],k*1LL)) ans+=a[j];
-			a[0]=0;
-			a[++a[0]]=w[i];
+		if(lx[i]!=lx[i-1]){
+			sort(b+1,b+1+res,cmp);
+			fr(j,1,min(k,res)) sum+=b[j];
+			res=0;
 		}
+		b[++res]=a[i];
 	}
-	sort(a+1,a+1+a[0],cmp);
-	fr(j,1,min(a[0],k*1LL)) ans+=a[j];
-	cout<<ans<<endl;
+	sort(b+1,b+1+res,cmp);
+	fr(j,1,min(k,res)) sum+=b[j];
+	printf("%lld\n",sum);
 	return 0;
 }
