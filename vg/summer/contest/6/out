@@ -1,0 +1,82 @@
+qwq1
+1 4
+x=1 l=1 r=5
+x=2 l=1 r=3
+qwqx=2 l=1 r=3 os=3 js=0
+x=3 l=4 r=5
+x=6 l=4 r=4
+qwqx=6 l=4 r=4 os=1 js=0
+x=3 l=4 r=5 os=1 js=1
+x=1 l=1 r=5 os=1 js=4
+3
+qwq2
+2 4
+x=1 l=1 r=5
+x=2 l=1 r=3
+x=4 l=1 r=2
+x=9 l=2 r=2
+qwqx=9 l=2 r=2 os=0 js=1
+x=4 l=1 r=2 os=1 js=1
+x=5 l=3 r=3
+qwqx=5 l=3 r=3 os=0 js=1
+x=2 l=1 r=3 os=2 js=1
+x=3 l=4 r=5
+x=6 l=4 r=4
+qwqx=6 l=4 r=4 os=0 js=1
+x=3 l=4 r=5 os=2 js=0
+x=1 l=1 r=5 os=4 js=1
+2 5
+x=1 l=1 r=5
+x=2 l=1 r=3
+x=4 l=1 r=2
+x=9 l=2 r=2
+qwqx=9 l=2 r=2 os=1 js=0
+x=4 l=1 r=2 os=0 js=2
+x=5 l=3 r=3
+qwqx=5 l=3 r=3 os=1 js=0
+x=2 l=1 r=3 os=0 js=3
+x=3 l=4 r=5
+qwqx=3 l=4 r=5 os=2 js=0
+x=1 l=1 r=5 os=0 js=5
+3
+qwq3
+2
+qwq4
+1
+x=1 l=1 r=5
+x=2 l=1 r=3
+qwqx=2 l=1 r=3 os=0 js=3
+x=3 l=4 r=5
+x=6 l=4 r=4
+qwqx=6 l=4 r=4 os=0 js=1
+x=3 l=4 r=5 os=1 js=1
+x=1 l=1 r=5 os=4 js=1
+x=1 l=1 r=5
+x=2 l=1 r=3
+x=4 l=1 r=2
+x=9 l=2 r=2
+qwqx=9 l=2 r=2 os=1 js=0
+x=4 l=1 r=2 os=1 js=1
+x=5 l=3 r=3
+qwqx=5 l=3 r=3 os=1 js=0
+x=2 l=1 r=3 os=1 js=2
+x=3 l=4 r=5
+x=6 l=4 r=4
+qwqx=6 l=4 r=4 os=1 js=0
+x=3 l=4 r=5 os=0 js=2
+x=1 l=1 r=5 os=1 js=4
+qwq5
+1
+x=1 l=1 r=5
+x=2 l=1 r=3
+x=4 l=1 r=2
+x=9 l=2 r=2
+qwqx=9 l=2 r=2 os=0 js=1
+x=4 l=1 r=2 os=2 js=0
+x=5 l=3 r=3
+qwqx=5 l=3 r=3 os=0 js=1
+x=2 l=1 r=3 os=3 js=0
+x=3 l=4 r=5
+qwqx=3 l=4 r=5 os=0 js=2
+x=1 l=1 r=5 os=5 js=0
+3

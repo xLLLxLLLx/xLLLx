@@ -1,0 +1,14 @@
+any two vertices aren't connected by an edge
+3 3
+1 2
+2 3
+3 1
+
+CA::
+1
+3
+
+Mine::
+2
+1 3
+

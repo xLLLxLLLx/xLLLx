@@ -74,7 +74,6 @@ LL hj(int x,LL val){
 }
 
 LL find(int x,int k){
-  //printf("find %d k=%d %lld\n",x,k,v[x]);
   int gg=sz[ls]+1;
   if(gg<k) return find(rs,k-gg);
   else if(gg==k) return v[x];
@@ -100,15 +99,11 @@ void print(int x){
 
 void insert(LL x){
   int gg=kth(root,x);
-  //printf("gg=%d\n",gg);
   pp pos=split(root,gg);
   ++idx;
   v[idx]=x,sz[idx]=1,rd[idx]=rand();
   root=merge(pos.fi,idx);
   root=merge(root,pos.se);
-  /*printf("xxxx\n");
-  print(root);
-  printf("xxxx\n");*/
 }
 
 void delet(int x){
@@ -122,9 +117,6 @@ int main(){
   int n;scanf("%d",&n);
   fr(i,1,n){
     int tp; LL x;scanf("%d%lld",&tp,&x);
-    /*puts("xx");
-    print(root);
-    puts("xx");*/
     if(tp==1) insert(x);
     if(tp==2) delet(x);
     if(tp==3) printf("%d\n",kth(root,x));
