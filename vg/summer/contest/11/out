@@ -1,0 +1,98 @@
+edge4 1
+edge5 4
+edge7 5
+edge7 5
+edge10 7
+qwq1 2 2 1
+qwq2 2 3 1
+qwq3 2 4 1
+qwq4 3 2 4
+qwq5 4 1 5
+qwq6 4 2 5
+qwq7 5 1 7
+qwq8 5 2 7
+qwq9 5 3 7
+qwq10 6 1 10
+rt=1
+x = 1
+x = 4
+x = 5
+x = 7
+x = 10
+!!!!!5
+5 0 0
+6 0 1
+7 1 0
+4 1 1
+8 1 1
+10 2 0
+1 2 1
+9 2 1
+2 3 1
+3 4 1
+now = 1
+pos = 1
+pos = 2
+pos = 3
+now = 4
+pos = 4
+now = 5
+pos = 5
+pos = 6
+now = 7
+pos = 7
+pos = 8
+pos = 9
+now = 10
+pos = 10
+?4
+!1
+!2
+!3
+in 1 5
+in 2 4
+in 3 10
+erase4 5
+erase7 5
+rt=4
+x = 4
+!!!!!4
+4 0 0
+1 1 0
+2 2 0
+3 3 0
+now = 4
+pos = 4
+!2
+erase1 4
+rt=1
+x = 1
+!!!!!1
+1 0 0
+2 0 1
+3 0 2
+now = 1
+pos = 1
+pos = 2
+pos = 3
+?4
+rt=7
+x = 7
+!!!!!7
+7 0 0
+8 0 1
+9 0 2
+10 1 0
+now = 7
+pos = 7
+pos = 8
+pos = 9
+erase10 7
+rt=10
+x = 10
+!!!!!10
+10 0 0
+now = 10
+pos = 10
+!3
+5

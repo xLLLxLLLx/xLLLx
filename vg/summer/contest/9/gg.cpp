@@ -1,76 +1,76 @@
-#include <iostream>
-#include <cstdio>
 #include <algorithm>
-#include <cstring>
+#include <cstdio>
 #include <cmath>
-using namespace std;
-const int N=100010,M=700;
-int s,tt,cnt,ans;
-bool in[N];
-int head[N],to[N],nxt[N],fa[N],bel[N],sz[N],lz[N],f[M][M],la[N],pa[N],a[N];
-inline int gi() {
-    int x=0,o=1;
-    char ch=getchar();
-    while(ch<'0'||ch>'9') ch=='-'?o=-1:0,ch=getchar();
-    while(ch>='0'&&ch<='9') x=x*10+ch-'0',ch=getchar();
-    return o*x;
+ 
+int arr[1001][1001],block,pos[100001],dfn[100001],size[100001],son[100001],top[100001],now,add[1001];
+int head[100001],nxt[100001],b[100001],k,n,fa[100001],t[100001],m,a[100001];
+void push(int s,int t){
+    nxt[++k]=head[s];
+    head[s]=k;
+    b[k]=t;
 }
-inline int dfs(int x) {
-    int d=1,ch=0;
-    for(int i=head[x];i;i=nxt[i]) {
-        int y=to[i];
-        fa[y]=x,d=max(d,dfs(y)+1);
-        if(bel[y]) bel[x]=bel[y],++ch;
-    }
-    if(d>s||ch>1) {
-        la[bel[x]=++cnt]=x,d=1;
-        for(int i=head[x];i;i=nxt[i]) pa[la[bel[to[i]]]]=x;
-    }
-    ++sz[bel[x]];
-    return d;
-}
-inline void add(int x,int t) {
-    int y=bel[x],z=sz[y],*v=f[y]+z;
-    if(y&&a[x]>=-z&&a[x]<z) v[a[x]]+=t;
-    if(a[x]-lz[y]<0) ans+=t;
-}
-inline void upd(int x,int t) {
-    int y=bel[x],z=sz[y],*v=f[y]+z;
-    if(t==1) ans-=v[--lz[y]];
-    else ans+=v[lz[y]++];
-    if(lz[y]==-z||lz[y]==z) {
-    for(int i=x;bel[i]==bel[x];i=fa[i]) a[i]-=lz[y];
-    for(int i=-z;i<z;i++) v[i]=0;
-    lz[y]=0;
-    for(int i=x;bel[i]==bel[x];i=fa[i])
-        if(in[i]&&a[i]>=-z&&a[i]<z) ++v[a[i]];
+void dfs1(int x){
+    size[x]=1;
+    for(int i=head[x];i;i=nxt[i]){
+        dfs1(b[i]);
+        if(size[b[i]]>size[son[x]])son[x]=b[i];
+        size[x]+=size[b[i]];
     }
 }
-inline void F(int x,int t) {
-    if(in[x]) add(x,-1);
-    a[x]+=t;
-    if(in[x]) add(x,1);
+void dfs2(int x,int t){
+    dfn[x]=++now;
+    top[x]=t;
+    if(son[x])dfs2(son[x],t);
+    for(int i=head[x];i;i=nxt[i])
+        if(b[i]!=son[x])dfs2(b[i],b[i]);
 }
-inline void modify(int x) {
-    int y=fa[x],t=(in[x]^=1)?1:-1;
-    add(x,t);
-    while(y&&!bel[y]) F(y,t),y=fa[y];
-    if(!y) return;x=bel[y];
-    while(bel[y]==x) F(y,t),y=fa[y];
-    while(y) upd(y,t),y=pa[y];
+void rebuild(int x){
+    arr[x][0]=0;
+    for(int i=(x-1)*block+1;pos[i]==x;i++)
+        arr[x][++arr[x][0]]=a[i];
+    std::sort(arr[x]+1,arr[x]+arr[x][0]+1);
 }
-int main() {
-    int n,m;
-    cin>>n>>m,s=sqrt(n)+1e-9;
-    for(int i=2,x;i<=n;i++)
-    to[++tt]=i,nxt[tt]=head[x=gi()],head[x]=tt;
-    for(int i=1;i<=n;i++) a[i]=gi(),in[i]=1;
-    dfs(1);
-    for(int i=1;i<=cnt;i++) {
-    int *v=f[i]+sz[i];
-    for(int j=la[i];bel[j]==bel[la[i]];j=fa[j])
-        if(a[j]>=-sz[i]&&a[j]<sz[i]) ++v[a[j]];
+void update(int l,int r,int delta){
+    for(int i=pos[l]+1;i<pos[r];++i)add[i]+=delta;
+    for(int i=l;pos[i]==pos[l]&&i<=r;++i)a[i]+=delta;
+    rebuild(pos[l]);
+    if(pos[l]!=pos[r]){
+        for(int i=r;pos[i]==pos[r]&&i>=l;--i)a[i]+=delta;
+        rebuild(pos[r]);
     }
-    while(m--) modify(abs(gi())),printf("%d ",ans);
-    return 0;
+}
+int getans(){
+    int ans=0;
+    for(int i=1;i<=pos[n];i++){
+        ans+=arr[i][0]-(std::upper_bound(arr[i]+1,arr[i]+arr[i][0]+1,-add[i])-arr[i])+1;
+    }
+    return ans;
+}
+int main(){
+    scanf("%d%d",&n,&m);
+    for(int i=2;i<=n;i++)scanf("%d",fa+i),push(fa[i],i);
+    block=sqrt(n);
+    for(int i=1;i<=n;i++)scanf("%d",t+i),pos[i]=(i-1)/block+1;
+    dfs1(1);
+    dfs2(1,1);
+    for(int i=1;i<=n;i++){
+        int tem=pos[dfn[i]];
+        arr[tem][++arr[tem][0]]=a[dfn[i]]=-t[i];
+    }
+    for(int i=1;i<=pos[n];i++)std::sort(arr[i]+1,arr[i]+arr[i][0]+1);
+    for(int i=1,tem;i<=m;i++){
+        scanf("%d",&tem);
+        if(tem==0){
+            printf("%d ",getans());
+            continue;
+        }
+        int sgn=tem>0?1:(tem=-tem,-1);
+        update(dfn[tem],dfn[tem],-n*sgn);
+        tem=fa[tem];
+        while(tem){
+            update(dfn[top[tem]],dfn[tem],sgn);
+            tem=fa[top[tem]];
+        }
+        printf("%d ",getans());
+    }
 }

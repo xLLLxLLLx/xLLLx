@@ -13,7 +13,7 @@ int head[N*N],dep[N*N],cur[N*N],n,m,cnt=-1,INF=1e9;
 
 void add(int x,int y,int c){
 	a[++cnt].to=y,a[cnt].w=c,a[cnt].nt=head[x],head[x]=cnt;
-	a[++cnt].to=x,a[cnt].w=c,a[cnt].nt=head[y],head[y]=cnt;
+	a[++cnt].to=x,a[cnt].w=0,a[cnt].nt=head[y],head[y]=cnt;
 }
 
 LL ans=0;

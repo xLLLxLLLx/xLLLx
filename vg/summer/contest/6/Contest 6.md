@@ -1,4 +1,4 @@
-[TOC]
+
 
 
 
@@ -12,10 +12,6 @@
 > - A::solved after the contest
 > - S::solving ::sob:
 > - X::tan90
-
-| #        | A    | B    | C    | D    | E    | F    |
-| -------- | ---- | ---- | ---- | ---- | ---- | ---- |
-| Contest6 | Y    | A    | A    | A    | A    | X    |
 
 ------我是vp分割线------
 
