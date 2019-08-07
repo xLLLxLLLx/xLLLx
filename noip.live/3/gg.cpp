@@ -94,7 +94,7 @@ double getProbability(int N, int maxR, int maxG, int maxB, int startR, int start
                 else
                 dp[i][r][g][b] = 0;
               if(dp[i][r][g][b]) {
-                printf("dp[%d][%d][%d][%d]=%lf\n", i + 1, r + 1, g + 1, b + 1, dp[i][r][g][b]);
+                printf("dp[%d][%d][%d][%d]=%lf\n", i, r + 1, g + 1, b + 1, dp[i][r][g][b]);
               }
             }
             }
@@ -129,7 +129,7 @@ double getProbability(int N, int maxR, int maxG, int maxB, int startR, int start
             dp[i + 1][r][g][b] = calc(r - d2, r + d2, g - d2, g + d2, b - d2, b + d2) - calc(r - d1, r + d1, g - d1, g + d1, b - d1, b + d1);
             if(i + 1 == N) {
               if(dp[i + 1][r][g][b]) {
-                printf("dp[%d][%d][%d][%d]=%lf\n", i + 2, r + 1, g + 1, b + 1, dp[i + 1][r][g][b]); 
+                printf("dp[%d][%d][%d][%d]=%lf\n", i + 1, r + 1, g + 1, b + 1, dp[i + 1][r][g][b]); 
               }
             }
             }
