@@ -39,7 +39,7 @@ void predfs(int u, int fa) {
 
 void init() {
 	for(int i = 1; i <= ou[0]; ++i) st[i][0] = ou[i];
-	for(int j = 1; j <= LOG; ++j)
+  for(int j = 1; j <= LOG; ++j)
 		for(int i = 1; i <= ou[0]; ++i) {
 			if(i + (1 << j) > ou[0] + 1)
 				continue;
