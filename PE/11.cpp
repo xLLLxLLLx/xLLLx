@@ -8,6 +8,11 @@ int main() {
 	for(int i = 1; i <= 20; ++i)
 		for(int j = 1; j <= 20; ++j) 
 			scanf("%lld", &a[i][j]);
+	for(int i = 1; i <= 20; ++i) {
+		for(int j = 1; j <= 20; ++j)
+			printf("%lld ", a[i][j]);
+		puts("");
+	}
 	ll maxn = 0;
 	for(int i = 1; i <= 20; ++i)
 		for(int j = 1; j <= 20; ++j) {
@@ -32,7 +37,7 @@ int main() {
 		for(int j = 1; j <= 20; ++j) {
 			int flg = 1;
 			ll pos = 1;
-			for(int t = 0; t < 3; ++t) {
+			for(int t = 0; t < 4; ++t) {
 				int yy = j + t;
 				if(yy > 20) {
 					flg = 0;
@@ -41,7 +46,7 @@ int main() {
 			}
 			if(flg) maxn = max(maxn, pos);
 			pos = 1, flg = 1;
-			for(int t = 0; t < 3; ++t) {
+			for(int t = 0; t < 4; ++t) {
 				int xx = i + t;
 				if(xx > 20) {
 					flg = 0;
@@ -49,6 +54,9 @@ int main() {
 				pos = pos * a[xx][j];
 			}
 			if(flg) maxn = max(maxn, pos);
+			if(flg && pos == 51267216) {
+				printf("%d %d\n", i, j);
+			}
 		}
 	printf("%lld\n", maxn);
 	return 0;

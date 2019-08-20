@@ -1,90 +1,154 @@
-#include<bits/stdc++.h>
-#define fr(i,x,y) for(int i=x;i<=y;++i)
-#define rf(i,x,y) for(int i=x;i>=y;--i)
-#define LL long long
+#include <bits/stdc++.h>
+#define ll long long
 using namespace std;
-const int N=2e4+10,M=2e6+10;
-int rt[N],lson[M],rson[M],f[M],deep[M];
-int n,m,sz=0;
+const int N = 5e4 + 10, inf = 1e9;
+struct data {
+  int nt, to, W;
+}a[2][N * 10];
+int n, now = 0;
+int head[2][N * 10], cnt[2], w[N * 10];
 
-void read(int &x){
-  char ch=getchar();x=0;
-  for(;ch<'0'||ch>'9';ch=getchar()) ;
-  for(;ch>='0'&&ch<='9';ch=getchar()) x=(x<<1)+(x<<3)+(ch^48);
+template <class T>
+void read(T &x) {
+  char ch = getchar(); x = 0;
+  for(; ch < '0' || ch > '9'; ch = getchar()) ;
+  for(; ch >= '0' && ch <= '9'; ch = getchar()) x = (x << 1) + (x << 3) + (ch ^ 48);
 }
 
-void build(int &x,int l,int r){
-  x=++sz;
-  if(l==r) {
-    f[x]=l;
-    return ;
-  } 
-  int mid=(l+r)>>1;
-  build(lson[x],l,mid),build(rson[x],mid+1,r);
+void adde(int id, int x, int y, int W) {
+  a[id][++cnt[id]].to = y;
+  a[id][cnt[id]].W = W;
+  a[id][cnt[id]].nt = head[id][x];
+  head[id][x] = cnt[id];
 }
 
-void change(int old,int &nw,int l,int r,int L,int k){
-  nw=++sz;
-  lson[nw]=lson[old],rson[nw]=rson[old];
-  if(l==r) { 
-    f[nw]=k,deep[nw]=deep[old]; return ; 
+void add(int id, int x, int y, int W) {
+  if(id == 1) {
+    printf("%d %d %d\n", x, y, W);
   }
-  int mid=(l+r)>>1;
-  if(L<=mid) change(lson[nw],lson[nw],l,mid,L,k);
-  else change(rson[nw],rson[nw],mid+1,r,L,k);
+  adde(id, x, y, W), adde(id, y, x, W);
 }
 
-int Ask(int x,int l,int r,int L){
-  if(l==r) return x;
-  int mid=(l+r)>>1;
-  if(L<=mid) return Ask(lson[x],l,mid,L);
-  else return Ask(rson[x],mid+1,r,L);
-}
-
-int find(int root,int x){
-  int gg=Ask(root,1,n,x);
-  if(f[gg]==x) return gg;
-  else return find(root,f[gg]);
-}
-
-void add(int old,int &nw,int l,int r,int L){
-  nw=++sz;
-  lson[nw]=lson[old],rson[nw]=rson[old];
-  if(l==r){
-    f[nw]=f[old];
-    deep[nw]=deep[old]+1;
-    return ;
+void predfs(int u, int fa) {
+  // printf("%d %d\n", u, fa);
+  int last = u;
+  for(int i = head[0][u]; ~i; i = a[0][i].nt) {
+    int to = a[0][i].to;
+    if(to == fa) continue;
+    predfs(to, u);
+    add(1, last, ++now, 0);
+    add(1, now, to, 1);
+    last = now;
+    w[now] = w[u];
   }
-  int mid=(l+r)>>1;
-  if(L<=mid) add(lson[nw],lson[nw],l,mid,L);
-  else add(rson[nw],rson[nw],mid+1,r,L);
 }
 
-int main(){
-  read(n),read(m);
-  build(rt[0],1,n);
-  fr(o,1,m){
-    int tp;read(tp);
-    int ggg=Ask(rt[o-1],1,n,422);
-    if(tp==1){
-      rt[o]=rt[o-1];
-      int A,B;read(A),read(B);
-      int a=find(rt[o],A),b=find(rt[o],B);
-      if(f[a]==f[b]) continue;
-      if(deep[a]>deep[b]) swap(a,b);
-      change(rt[o-1],rt[o],1,n,f[a],f[b]);
-      if(deep[a]==deep[b]) add(rt[o],rt[o],1,n,f[b]);
-    } else if(tp==2) {
-      int x;read(x);
-      rt[o]=rt[x];
-    } else {
-      rt[o]=rt[o-1];
-      int x,y;read(x),read(y);
-      x=find(rt[o],x);
-      y=find(rt[o],y);
-      if(f[x]==f[y]) printf("1\n");
-      else printf("0\n");
+struct node {
+  int val, num;
+} b[N * 10], c[N * 10];
+int res = 0, tmp = 0;
+
+int bu, bv, bid, mx, tot;
+int us[N * 10], sz[N * 10];
+ll ans = 0;
+
+bool cmp(node A, node B) {
+  return A.val < B.val;
+}
+
+void gotsz(int x, int fa) {
+  sz[x] = 1;
+  for(int i = head[1][x]; ~i; i = a[1][i].nt) {
+    int to = a[1][i].to;
+    if(us[i >> 1] || to == fa) {
+      continue;
+    }
+    gotsz(to, x);
+    sz[x] += sz[to];
+    int pos = min(tot - sz[to], sz[to]);
+    if(mx < pos) {
+      bu = x, bv = to, bid = i;
+      mx = pos;
     }
   }
+}
+
+void gotpoint(int u, int fa, int val, int num) {
+  if(u <= n) {
+    b[++res] = (node){val, num};
+  }
+  for(int i = head[1][u]; ~i; i = a[1][i].nt) {
+    int to = a[1][i].to;
+    if(to == fa || us[i >> 1]) continue;
+    gotpoint(to, u, min(val, w[to]), num + a[1][i].W);
+  }
+}
+
+int nm[N * 10];
+
+void go(int x, int size) {
+  if(size == 1) {
+    return ;
+  }
+  printf("qwq%d %d\n", x, size);
+  tot = size, mx = bu = bv = 0;
+  gotsz(x, 0);
+  int x1 = bv, s1 = sz[bv], x2 = bu, s2 = tot - s1;
+  us[bid >> 1] = 1;
+  printf("%d %d\n", bv, bu);
+  res = 0, gotpoint(x1, 0, w[x1], 0);
+  for(int i = 1; i <= res; ++i) c[i] = b[i];
+  tmp = res;
+  res = 0, gotpoint(x2, 0, w[x2], 0);
+  sort(b + 1, b + 1 + res, cmp), sort(c + 1, c + 1 + tmp, cmp);
+  for(int i = 1; i <= res; ++i)
+    printf("b%d %d\n", b[i].val, b[i].num);
+  for(int i = 1; i <= tmp; ++i)
+    printf("c%d %d\n", c[i].val, c[i].num);
+  nm[res + 1] = 0;
+  for(int i = res; i >= 1; --i)
+    nm[i] = max(nm[i + 1], b[i].num);
+  int l = 1;
+  for(int i = 1; i <= tmp; ++i) {
+    while(l <= res && b[l].val < c[i].val) l++;
+    if(l <= res) {
+      ans = max(ans, 1ll * (nm[l] + c[i].num + 1 + a[1][bid].W) * c[i].val);
+    } else {
+      break;
+    }
+  }
+  nm[tmp + 1] = 0;
+  for(int i = tmp; i >= 1; --i)
+    nm[i] = max(nm[i + 1], c[i].num);
+  l = 1;
+  for(int i = 1; i <= res; ++i) {
+    while(l <= tmp && c[l].val < b[i].val) l++;
+    if(l <= tmp) {
+      ans = max(ans, 1ll * (nm[l] + b[i].num + 1 + a[1][bid].W) * b[i].val);
+    } else {
+      break;
+    }
+  }
+  go(x1, s1);
+  go(x2, s2);
+}
+
+int main() {
+  for(int i = 0; i < 2; ++i) {
+    cnt[i] = -1;
+    memset(head[i], -1, sizeof head[i]);
+  }
+  read(n), now = n;
+  for(int i = 1; i <= n; ++i) {
+    read(w[i]);
+    ans = max(ans, (long long)w[i]);
+  }
+  for(int i = 1, x, y; i < n; ++i) {
+    read(x), read(y);
+    add(0, x, y, 0);
+  }
+  predfs(1, 0);
+  go(1, now);
+  printf("%lld\n", ans);
   return 0;
 }

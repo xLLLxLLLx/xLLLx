@@ -1,22 +1,18 @@
-#include<bits/stdc++.h>
-#define fr(i,x,y) for(int i=x;i<=y;++i)
-#define rf(i,x,y) for(int i=x;i>=y;--i)
-#define LL long long
+#include <bits/stdc++.h>
 using namespace std;
 
-int main(){
+int main() {
   srand(time(NULL));
-  int n=20000,m=20000;
-  printf("%d %d\n",n,m);
-  fr(o,1,n){
-    int tp=rand()%3+1;
-    if(tp==1||tp==3) {
-      int x=rand()%20000,y=rand()%20000;
-      printf("%d %d %d\n",tp,x,y);
-    } else if(tp==2) {
-      int x=rand()%o;
-      printf("%d %d\n",tp,o);
-    }
+  int n = rand() % 1000 + 1;
+  printf("%d\n", n);
+  for(int i = 1; i <= n; ++i) {
+    int pos = rand() % 65536 + 1;
+    printf("%d ", pos);
+  }
+  puts("");
+  for(int i = 2; i <= n; ++i) {
+    int pos = rand() % (i - 1) + 1;
+    printf("%d %d\n", pos, i);
   }
   return 0;
 }
